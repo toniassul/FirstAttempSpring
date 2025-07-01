@@ -1,0 +1,90 @@
+This error means your local branch is behind the remote branch (there are changes on GitHub
+ that you don't have locally). Here's how to fix it:
+Option 1: Pull First, Then Push (Recommended)
+1. Pull the remote changes:
+cmd git pull origin main
+2. If there are merge conflicts, resolve them, then:
+cmd git add .
+git commit -m "Merge remote changes"
+3. Push your changes:
+cmd git push -u origin main
+Option 2: Force Push (Only if you want to overwrite remote changes)
+⚠️ Warning: This will delete any changes that exist on GitHub but not on your local machine.
+cmd git push -u origin main --force
+Option 3: Check What's Different First
+1. See what's on the remote that you don't have:
+cmd git fetch origin
+git log HEAD..origin/main --oneline
+2. See what you have locally that's not on remote:
+cmd git log origin/main..HEAD --oneline
+This helps you understand what changes will be merged.
+Most Common Scenario:
+If you created the repository on GitHub with a README file or license, and you're now trying
+ to push your local project, you need to pull those files first.
+
+
+_____
+If you just created the repository:
+1. Initialize git (if not done):
+cmd git init
+2. Add your files:
+cmd git add .
+3. Commit:
+cmd git commit -m "Initial commit"
+4. Add remote:
+cmd git remote add origin https://github.com/toniassul/POO.git
+5. Push:
+cmd git push -u origin main
+What does git branch show you? This will tell us exactly what's happening with your branches.
+
+
+-_______
+1. Generate SSH key
+ssh-keygen -t ed25519 -C "your_email@gmail.com"
+
+# 2. Start ssh-agent and add key
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+
+# 3. Copy public key to add to GitHub
+cat ~/.ssh/id_ed25519.pub
+
+# 4. Test connection
+ssh -T git@github.com
+
+# 5. Try pushing again
+git push origin main
+
+
+______
+
+
+If you just created the repository:
+1. Initialize git (if not done):
+cmdgit init
+2. Add your files:
+cmd git add .
+3. Commit:
+cmd git commit -m "Initial commit"
+4. Add remote:
+cmdgit remote add origin https://github.com/toniassul/POO.git
+5. Push:
+cmd git push -u origin main
+What does git branch show you? This will tell us exactly what's happening with your branches.
+
+
+__ memorizando
+
+git init
+git status
+git add .
+git branch -M main
+git pull origin main
+git remote add origin [url]
+git remote -v 
+git pull origin main
+git status
+git commit -m "recordando git"
+git push -u origin main 
+tratar de no hacer : git push -u origin main --force
+git 
