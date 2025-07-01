@@ -1,17 +1,19 @@
 package com.example.controller;
 
-import com.example.model.Article;
-import com.example.model.ArticleDAO;
-import com.example.view.ArticleView;
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
+
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+
+import com.example.model.Article;
+import com.example.model.ArticleDAO;
+import com.example.view.ArticleView;
 
 public class ArticleController {
     private final ArticleView view;
@@ -33,6 +35,7 @@ public class ArticleController {
         view.getBtnDelete().addActionListener(e -> deleteArticle());
         view.getBtnClear().addActionListener(e -> clearFields());
         view.getBtnExit().addActionListener(e -> System.exit(0));
+        view.getBtnSearch().addActionListener(e -> searchArticle());
 
         // Add table selection listener
         view.getTable().addMouseListener(new MouseAdapter() {
@@ -45,13 +48,22 @@ public class ArticleController {
             }
         });
 
-        // Add filter listener (on Enter)
+        // Add filter listeners
         view.getTxtFilter().addActionListener(e -> filterArticles());
-        // Add filter listener (on typing)
         view.getTxtFilter().addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
                 filterArticles();
+            }
+        });
+
+        // Add enter key listener to search field
+        view.getTxtSearchId().addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    searchArticle();
+                }
             }
         });
     }
@@ -153,6 +165,46 @@ public class ArticleController {
         } else {
             loadArticlesTable();
         }
+    }
+
+    private void searchArticle() {
+        try {
+            int searchId = Integer.parseInt(view.getTxtSearchId().getText().trim());
+            Article article = articleDAO.getArticleById(searchId);
+            
+            if (article != null) {
+                // Switch to the search tab if not already there
+                view.getTabbedPane().setSelectedIndex(0);
+                
+                // Display the article details
+                displaySearchResults(article);
+            } else {
+                JOptionPane.showMessageDialog(view,
+                    "No se encontró ningún artículo con el ID: " + searchId,
+                    "Artículo no encontrado",
+                    JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(view,
+                "Por favor, ingrese un ID válido",
+                "Error de entrada",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void displaySearchResults(Article article) {
+        // Assuming we add these getters to ArticleView
+        JTextField txtIdResult = (JTextField) ((JPanel) view.getTabbedPane().getComponentAt(0)).getComponent(4);
+        JTextField txtNameResult = (JTextField) ((JPanel) view.getTabbedPane().getComponentAt(0)).getComponent(6);
+        JTextField txtBrandResult = (JTextField) ((JPanel) view.getTabbedPane().getComponentAt(0)).getComponent(8);
+        JTextField txtPriceResult = (JTextField) ((JPanel) view.getTabbedPane().getComponentAt(0)).getComponent(10);
+        JTextField txtStockResult = (JTextField) ((JPanel) view.getTabbedPane().getComponentAt(0)).getComponent(12);
+
+        txtIdResult.setText(String.valueOf(article.getId()));
+        txtNameResult.setText(article.getName());
+        txtBrandResult.setText(article.getBrand());
+        txtPriceResult.setText(String.format("%.2f", article.getPrice()));
+        txtStockResult.setText(String.valueOf(article.getStock()));
     }
 
     private Article getArticleFromFields() throws NumberFormatException {
