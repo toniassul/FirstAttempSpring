@@ -48,4 +48,9 @@ public class ArticuloServiceImpl implements ArticuloService {
         Articulo articulo = getArticuloById(id);
         articuloRepository.delete(articulo);
     }
+
+    @Override
+    public List<Articulo> buscarPorNombre(String nombreArticulo) {
+        return articuloRepository.findByNombreArticuloContainingIgnoreCase(nombreArticulo);
+    }
 }

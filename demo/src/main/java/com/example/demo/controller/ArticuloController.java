@@ -54,6 +54,18 @@ public class ArticuloController {
         return ResponseEntity.noContent().build();
     }
 
+
+    @GetMapping("/buscar")
+    public List<ArticuloDTO> buscarArticulosPorNombre(@RequestParam(name = "nombreArticulo", required = false) String nombreArticulo) {
+        List<Articulo> articulos;
+        if (nombreArticulo == null || nombreArticulo.isEmpty()) {
+            articulos = articuloService.getAllArticulos();
+        } else {
+            articulos = articuloService.buscarPorNombre(nombreArticulo);
+        }
+        return articulos.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
     private ArticuloDTO convertToDto(Articulo articulo) {
         return modelMapper.map(articulo, ArticuloDTO.class);
     }

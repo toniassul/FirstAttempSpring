@@ -10,4 +10,5 @@ public interface ArticuloService {
     Articulo createArticulo(Articulo articulo);
     Articulo updateArticulo(Integer id, Articulo articuloDetails);
     void deleteArticulo(Integer id);
+    List<Articulo> buscarPorNombre(String nombreArticulo);
 }

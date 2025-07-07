@@ -4,7 +4,6 @@ const baseUrl = 'http://localhost:8080/api/articulos';
 // Cargar artículos al iniciar la página
 document.addEventListener('DOMContentLoaded', () => {
     cargarArticulos();
-    document.getElementById('salir').addEventListener('click', () => window.close());
     setupAutocomplete();
 });
 
@@ -160,16 +159,23 @@ function limpiarFormulario() {
 
 // Función para filtrar artículos
 async function filtrarArticulos() {
-    const filtro = document.getElementById('filtroInput').value;
-    // Always use nombreArticulo for filter
+    const filtro = document.getElementById('filtroInput').value.trim();
+    if (!filtro) {
+        cargarArticulos();
+        return;
+    }
     try {
         const response = await fetch(`${baseUrl}/buscar?nombreArticulo=${encodeURIComponent(filtro)}`);
-        if (!response.ok) throw new Error('No se pudo filtrar');
+        if (!response.ok) throw new Error(await response.text());
         const articulos = await response.json();
         mostrarArticulosEnTabla(articulos);
     } catch (error) {
         console.error('Error al filtrar artículos:', error);
-        alert('Error al filtrar los artículos');
+        if (error.message.includes('400')) {
+            alert('Por favor ingrese un texto para buscar');
+        } else {
+            alert('Error al filtrar los artículos: ' + error.message);
+        }
     }
 }
 
